@@ -1,6 +1,9 @@
 import os
 
 import click
+from dotenv import load_dotenv
+
+from llm import base_llm
 
 
 @click.group()
@@ -10,7 +13,7 @@ def cli():
 
 @cli.command()
 @click.argument("topic")
-def create(topic):
+def create(topic: str):
     try:
         os.mkdir(f"./wikis/{topic}")
         with open(f"./wikis/{topic}/index.md", "w") as f:
@@ -21,15 +24,18 @@ def create(topic):
 
 @cli.command()
 @click.argument("content")
-def add(content):
+def add(content: str):
     print(f"New content {content} added")
+    output = base_llm(f"tell me about {content}")
+    print(output)
 
 
 @cli.command()
 @click.argument("question")
-def ask(question):
+def ask(question: str):
     print(f"Question {question} asked.")
 
 
 if __name__ == "__main__":
+    load_dotenv()
     cli()
