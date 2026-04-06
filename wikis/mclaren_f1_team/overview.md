@@ -1,0 +1,1 @@
+# McLaren F1 Team Overview\n\nMcLaren Racing Limited, trading as McLaren, is a British Formula One team based at the McLaren Technology Centre in Woking, England. Founded in 1963 by New Zealander Bruce McLaren, the team has won 9 World Constructors' Championships and 8 World Drivers' Championships.

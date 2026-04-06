@@ -25,9 +25,8 @@ def create(topic: str):
 @cli.command()
 @click.argument("content")
 def add(content: str):
-    print(f"New content {content} added")
     query_agent(
-        f"tell me about {content}. Use the print output tool for the final user response"
+        f"Add content about {content}. Use the tools at your disposal. You must use the print output tool if you want to provide updates to the user."
     )
 
 
