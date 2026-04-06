@@ -3,7 +3,7 @@ import os
 import click
 from dotenv import load_dotenv
 
-from llm import base_llm
+from llm import query_agent
 
 
 @click.group()
@@ -26,8 +26,7 @@ def create(topic: str):
 @click.argument("content")
 def add(content: str):
     print(f"New content {content} added")
-    output = base_llm(f"tell me about {content}")
-    print(output)
+    output = query_agent(f"tell me about {content}. Use the print output tool")
 
 
 @cli.command()
