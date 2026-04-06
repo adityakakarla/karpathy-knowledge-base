@@ -11,6 +11,20 @@ def read_index(topic: str):
         return "No index file found"
     except PermissionError:
         print(f"Permission denied for {topic} index")
+        return f"Permission denied for {topic} index"
+
+
+def read_content_file(topic: str, filename: str):
+    try:
+        with open(f"./wikis/{topic}/{filename}", "r") as f:
+            content = f.read()
+            return content
+    except FileNotFoundError:
+        print(f"File {filename} not found for {topic}")
+        return "No file found"
+    except PermissionError:
+        print(f"Permission denied for {topic} file {filename}")
+        return f"Permission denied for {topic} file {filename}"
 
 
 def update_index(topic: str, new_index: str):
@@ -25,6 +39,19 @@ def update_index(topic: str, new_index: str):
 
 def get_topics():
     return [f.name for f in Path("./wikis").iterdir() if f.is_dir()]
+
+
+def update_content_file(topic: str, content: str, filename: str):
+    try:
+        with open(f"./wikis/{topic}/{filename}", "w") as f:
+            f.write(content)
+        return "File successfully updated!"
+    except FileNotFoundError:
+        print(f"File {filename} not found for {topic}")
+        return "No file found"
+    except PermissionError:
+        print(f"Permission denied to update {filename}")
+        return f"Permission denied to update {filename}"
 
 
 def add_content_file(topic: str, content: str, filename: str):

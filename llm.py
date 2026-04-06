@@ -5,7 +5,7 @@ from typing import Any
 from xai_sdk import Client
 from xai_sdk.chat import system, tool, tool_result, user
 
-from utils import add_content_file, get_topics, update_index
+from utils import add_content_file, get_topics, read_content_file, read_index, update_content_file, update_index
 
 
 def query_agent(query: str):
@@ -48,6 +48,60 @@ def query_agent(query: str):
                     },
                 },
                 "required": ["topic", "new_index"],
+            },
+        ),
+        tool(
+            name="read_content_file",
+            description="Read the contents of a file for a given topic",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "topic": {
+                        "type": "string",
+                        "description": "The topic the file belongs to",
+                    },
+                    "filename": {
+                        "type": "string",
+                        "description": "The name of the file to read",
+                    },
+                },
+                "required": ["topic", "filename"],
+            },
+        ),
+        tool(
+            name="read_index",
+            description="Read the index file for a given topic",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "topic": {
+                        "type": "string",
+                        "description": "The topic to read the index for",
+                    },
+                },
+                "required": ["topic"],
+            },
+        ),
+        tool(
+            name="update_content_file",
+            description="Update the contents of an existing file for a given topic",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "topic": {
+                        "type": "string",
+                        "description": "The topic the file belongs to",
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "The new content to write to the file",
+                    },
+                    "filename": {
+                        "type": "string",
+                        "description": "The name of the file to update",
+                    },
+                },
+                "required": ["topic", "content", "filename"],
             },
         ),
         tool(
@@ -103,8 +157,19 @@ If you are adding new files, you must update the index.
             elif function_name == "get_topics":
                 topics = get_topics()
                 chat.append(tool_result(json.dumps(topics)))
+            elif function_name == "read_index":
+                result = read_index(args["topic"])
+                chat.append(tool_result(result))
+            elif function_name == "read_content_file":
+                result = read_content_file(args["topic"], args["filename"])
+                chat.append(tool_result(result))
             elif function_name == "update_index":
                 result = update_index(args["topic"], args["new_index"])
+                chat.append(tool_result(result))
+            elif function_name == "update_content_file":
+                result = update_content_file(
+                    args["topic"], args["content"], args["filename"]
+                )
                 chat.append(tool_result(result))
             elif function_name == "add_content_file":
                 result = add_content_file(

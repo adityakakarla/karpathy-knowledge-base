@@ -33,7 +33,7 @@ def add(content: str):
 @cli.command()
 @click.argument("question")
 def ask(question: str):
-    print(f"Question {question} asked.")
+    query_agent(question)
 
 
 if __name__ == "__main__":
