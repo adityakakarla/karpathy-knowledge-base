@@ -7,5 +7,6 @@ requires-python = ">=3.13"
 dependencies = [
     "click>=8.3.2",
     "dotenv>=0.9.9",
+    "pathlib>=1.0.1",
     "xai-sdk>=1.11.0",
 ]

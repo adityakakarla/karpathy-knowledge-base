@@ -5,6 +5,8 @@ from typing import Any
 from xai_sdk import Client
 from xai_sdk.chat import system, tool, tool_result, user
 
+from utils import get_topics
+
 
 def query_agent(query: str):
     client = Client(api_key=os.getenv("XAI_API_KEY"))
@@ -12,7 +14,7 @@ def query_agent(query: str):
     tools = [
         tool(
             name="print_output",
-            description="Print text for user",
+            description="Print text for user. This must be used at least once in every single conversation to output some content for the user to see, but feel free to use it more often as needed.",
             parameters={
                 "type": "object",
                 "properties": {
@@ -21,9 +23,18 @@ def query_agent(query: str):
                 "required": ["content"],
             },
         ),
+        tool(
+            name="get_topics",
+            description="Get the list of current topics in the wiki",
+            parameters={
+                "type": "object",
+                "properties": {},
+                "required": [],
+            },
+        ),
     ]
 
-    chat = client.chat.create(model="grok-4-1-fast-non-reasoning", tools=tools)
+    chat = client.chat.create(model="grok-4-1-fast-reasoning", tools=tools)
 
     chat.append(
         system(
@@ -33,12 +44,15 @@ def query_agent(query: str):
     chat.append(user(query))
     response = chat.sample()
 
-    if response.tool_calls:
+    while response.tool_calls:
         chat.append(response)
         for tc in response.tool_calls:
             args = json.loads(tc.function.arguments)
             if tc.function.name == "print_output":
                 print(args["content"])
                 chat.append(tool_result("Output printed!"))
+            elif tc.function.name == "get_topics":
+                topics = get_topics()
+                chat.append(tool_result(json.dumps(topics)))
         response = chat.sample()
     return response.content
